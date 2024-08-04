@@ -1,17 +1,26 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div class="appTimer">
+    <CreateTimer></CreateTimer>
+    <TimerList></TimerList>
+  </div>
 </template>
 
-<script>
-import HelloWorld from "./components/HelloWorld.vue";
+<script setup>
+import { onMounted, onUnmounted } from "vue";
+import CreateTimer from "./components/CreateTimer.vue";
+import TimerList from "./components/TimerList.vue";
+import eventBus from "../src/services/eventBus";
 
-export default {
-  name: "App",
-  components: {
-    HelloWorld,
-  },
+const updateCurrentTime = () => {
+  eventBus.$emit("currentTime", Math.floor(new Date().getTime()));
 };
+let intervalTime;
+onMounted(() => {
+  intervalTime = setInterval(updateCurrentTime, 1000);
+});
+onUnmounted(() => {
+  clearInterval(intervalTime);
+});
 </script>
 
 <style>
@@ -22,5 +31,14 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.appTimer {
+  width: 850px;
+  margin: 0 auto;
+}
+
+p {
+  margin: 0 !important;
 }
 </style>
